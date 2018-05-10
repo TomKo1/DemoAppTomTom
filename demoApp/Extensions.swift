@@ -8,6 +8,7 @@
 
 import Foundation
 import MapKit
+import TomTomOnlineSDKSearch
 // extensions in Kotlin are simpler :(
 
 
@@ -20,4 +21,3 @@ extension CLLocationCoordinate2D: Equatable{
         return (lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude)
     }
 }
-

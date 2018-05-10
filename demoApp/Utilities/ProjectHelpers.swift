@@ -35,6 +35,7 @@ class ProjectHelpers: NSObject {
         didSave(preferences: preferences)
     }
     
+    
     /**
     * Helper for putToUserDefaults method which checks if
     * the UserDefault was saved correctly.
@@ -50,14 +51,14 @@ class ProjectHelpers: NSObject {
     /**
     * Method to show a Anroid-like Toast.
     */
-    func showToast(viewController: UIViewController!, message: String!){
+    public func showToast(viewController: UIViewController!, message: String!){
         
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
         viewController.present(alert, animated: true)
         
         // duration in seconds
         let duration: Double = 5
-        
+    
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration) {
             alert.dismiss(animated: true)
         }

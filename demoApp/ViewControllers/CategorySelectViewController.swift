@@ -11,13 +11,14 @@ import UIKit
 /**
  *  Controller of TableView in which we can select a category in which we want to search.
  */
+//tested
 class CategorySelectViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
     
     var searchQuery:String?
     // basic categories in which we can choose while category search
     let categoryList = ["Petrol Station", "Restaurant", "Cash dispenser"]
     //slsected category name or nil s
-    var categoryName: String = "petrol station"
+    var categoryIndex: Int! = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +51,7 @@ class CategorySelectViewController: UIViewController, UITableViewDelegate,UITabl
     *   order to show category search results.
     */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.categoryName =  self.categoryList[indexPath.row]
+        self.categoryIndex =  indexPath.row
         performSegue(withIdentifier: "results", sender: self)
     }
     
@@ -61,7 +62,7 @@ class CategorySelectViewController: UIViewController, UITableViewDelegate,UITabl
         if(segue.destination is CategorySearchViewController){
             let categorySearchViewController = segue.destination as! CategorySearchViewController
             categorySearchViewController.searchQuery = self.searchQuery
-            categorySearchViewController.categoryName = self.categoryName
+            categorySearchViewController.categoryIndex = self.categoryIndex
         }
     }
 

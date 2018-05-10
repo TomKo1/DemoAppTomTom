@@ -18,7 +18,7 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
     var locationManager: CLLocationManager = CLLocationManager()
     // the delegate to which results of the general/category search are returned
     var  callBackDelegate: TTSearchDelegate
-    var categorySelected = String()
+    var categoryCode = String()
     
      init(delegateVC delegate: TTSearchDelegate){
         self.callBackDelegate = delegate
@@ -30,19 +30,19 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
     *   Method filters the results of category search and returns only results
     *   which are suitable to given category string.
     */
-    func filterThroughResultArray(resultArray: Array<TTSearchResult>, categoryName category: String) -> Array<TTSearchResult>{
+    func filterThroughResultArray(resultArray: Array<TTSearchResult>, categoryIndex category: Int) -> Array<TTSearchResult>{
         
-        let categoryLower = category.lowercased()
-        //todo: comparing strings may be ineffective -> another way?
-        switch categoryLower{
-        case "cash dispenser":
-            self.categorySelected = categoryLower
-        case "petrol station":
-            self.categorySelected = categoryLower
-        case "restaurant":
-             // dla uproszczenia pomijam steak housy... thai i inne
-            self.categorySelected = categoryLower
+        //todo: think over !
+        // comparing depending on codes -> comparing on string may be ineffective (?) -> another way?
+        switch category{
+        case 0:
+            self.categoryCode = "PETROL_STATION"
+        case 1:
+            self.categoryCode = "RESTAURANT"
+        case 2:
+            self.categoryCode = "CASH_DISPENSER"
         default:
+            // if wrong code return all
             return resultArray
         }
        
@@ -55,12 +55,11 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
      */
     private func predicate(singleResult: TTSearchResult) -> Bool{
         //todo: think over this strange construction
+        //todo: comparing on name may be ineffective -> codes (?)
         for classification in singleResult.poi.classifications{
-            for classificationName in classification.classificationNames{
-                if(classificationName.name == self.categorySelected){
+                if(classification.code == self.categoryCode){
                     return true
                 }
-            }
         }
         return false
     }
@@ -79,6 +78,7 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
     /**
     * Method for performing category search.
     */
+    //"tested"
     func performCategorySearch(withQuery query: String?) {
         let queryBuilder = TTSearchQueryBuilder.create(withTerm: query)
         let search = TTSearch()
@@ -90,7 +90,9 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
     
     /**
     * Method for performing general(not limited by current location) search.
+    *
     */
+    //"tested"
     func perfomGeneralSearch(withQuery query: String?){
         // this is just general searching not limited in any way
         // for 'category search' please use btn in main menu

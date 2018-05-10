@@ -12,15 +12,17 @@ import TomTomOnlineSDKMaps
 import TomTomOnlineSDKSearch
 import TomTomOnlineSDKRouting
 
-//tood: Map language !!!
+
+//todo: tests
+//todo: separate delegate
+//todo: drawer!
 /**
  * Main View (map) controller. If there were more delegates(more code) I would consider removing them
  * to separate classes.
  */
 class ViewController: UIViewController, UISearchBarDelegate,
-                        TTSearchDelegate, CLLocationManagerDelegate,
-                        TTAnnotationDelegate, TTMapViewDelegate,
-                        NavigaitonBtnBalloonDelegate {
+                        TTSearchDelegate, CLLocationManagerDelegate, TTMapViewDelegate,
+                        NavigaitonBtnBalloonDelegate, TTAnnotationDelegate {
     /**
     *  Fields for current user's lcoation managment.
     */
@@ -32,45 +34,107 @@ class ViewController: UIViewController, UISearchBarDelegate,
     var ttMapView:TTMapView = TTMapView()
     //fields 'injected' when there is a segue from category Search
     var objectFromCategorySearch: TTSearchResult?
+   
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configTomTomMapTiles()
+        self.configLocManagerAndAskForPerm()
         
-        configLocManagerAndAskForPerm()
+        self.configTomTomMapTiles()
         
+       
+        
+        // display
+        self.view = ttMapView;
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+    
+    
     
     /**
-    *   Adds annotation representing current user locaiton.
-    */
-    private func addCurrentUserLocation(){
-        if let coordintion2D = currentLocation?.coordinate{
-            let annotation = TTAnnotation(coordinate: coordintion2D)
+     *   Configuration method called separately outside constructor.
+     */
+    //tested
+    func configTomTomMapTiles() {
+        
+        ttMapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        ttMapView.delegate = self
+        
+        
+        
+        //todo: not tested -> fix this ! :(
+        if(objectFromCategorySearch != nil){
+            
+            ttMapView.center(on: objectFromCategorySearch!.position, withZoom: 10)
+            ttMapView.annotationManager?.removeAllAnnotations()
+            
+            let annotation = createCustomAnnotation(withCoordinates: objectFromCategorySearch!.position, withName: "mapIcon.jpg", withTag: "objectFound")
+            
             ttMapView.annotationManager?.add(annotation!)
+            
+        }
+    
+        
+        ttMapView.annotationManager?.delegate = self
+        
+        restoreUserOptions()
+        
+    }
+    
+    
+    
+    
+    /**
+     *   Restores user's options from UserDefaults ('shared preferences').
+     */
+    //tested
+    private func restoreUserOptions(){
+        let projectHelpers = ProjectHelpers()
+        
+        if(projectHelpers.readFromUserDefaults(key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)){
+            // where is vector ?! -> default flow doesn't work with vector?
+            //todo: ???
+            ttMapView.trafficTile = .raster
+            ttMapView.trafficType = .flow
+            
+            ttMapView.trafficFlowOn = true
+        }
+        if(projectHelpers.readFromUserDefaults(key: AppStrings.ENABLE_INCIDENTS_CONST_)){
+            //todo: ??
+            ttMapView.trafficTile = .raster
+            ttMapView.trafficType = .incidents
+    
+            ttMapView.trafficIncidentsOn = true
+            // .raster ?!
+            ttMapView.trafficIncidentsStyle = .init(rawValue: 0)
+            
         }
     }
     
+    
     /**
-    *   Method configurating (just) TomTomMapView.
-    */
-    private func configTomTomMapTiles(){
-        // there are many 'options' available so I extracted it to separate class doing only config
-        //(not particularly good thing)
-        let configurer = ConfigTomTomMaps(mapViewToConfig: ttMapView, ttSearchResult: objectFromCategorySearch, ballonsDelegate: self, ttMapViewDelegate: self)
-        self.view = configurer.config()
+     * helper 'facrtory' creating TTAnnotations with specific image
+     *
+     */
+    //tested
+    func createCustomAnnotation(withCoordinates: CLLocationCoordinate2D!,withName: String!, withTag: String!) -> TTAnnotation?{
+        
+        let image = UIImage(named:
+            withName)
+        let annotation = TTAnnotation(coordinate: withCoordinates, image: image, tag: withTag, anchor: TTAnnotationAnchor.center, type: TTAnnotationType.focal)
+        
+        return annotation
+        
     }
+    
     
     /**
      *  Called when the user clicks the btn responsible for launcing searching
      */
+    //todo: test -> bounding & action
     @IBAction func searchBtnClicked(_ sender: Any) {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.delegate = self
@@ -81,6 +145,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *   Method from UISearchBarDelegate called when the UIBarSearchButton is
      *    clicked -> perform general search.
      */
+     //todo: test -> bounding & action
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let searchUtilities = SearchUtilities(delegateVC: self)
         searchUtilities.perfomGeneralSearch(withQuery: searchBar.text)
@@ -94,57 +159,67 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         ttMapView.annotationManager?.removeAllAnnotations()
         
-        addCurrentUserLocation()
+        if let coordintion2D = currentLocation?.coordinate{
+            addCurrentUserLocation(currentLocation: coordintion2D, center: false)
+        }
         
         ttMapView.center(on: CLLocationCoordinate2D(latitude: 0, longitude: 0), withZoom: 0)
         
         for oneResult in result {
             let coordinate = oneResult.position
-            let annotation = TTAnnotation(coordinate: coordinate)
+    
+            let annotation = createCustomAnnotation(withCoordinates: coordinate, withName: "mapIcon.jpg", withTag: "resultCategory")
+                
+
             ttMapView.annotationManager?.add(annotation!)
         }
     }
+    
     
     /**
      *   Method from TTSearchDelegate called when there is an error
      *   while 'general' (in this case) search.
      */
     func search(_ search: TTSearch!, failedWithError error: TTResponseError!) {
-        //todo: Toast
+       let projectHelpers = ProjectHelpers()
+        projectHelpers.showToast(viewController: self, message: "Error while searching. Please try again.")
     }
     
-    
-    /**
-     *   Method from TTAnnotationDelegate called when users taps the annotation.
-     */
-    func annotationSelected(_ annotation: TTAnnotation) {
-        selectedAnnotation = annotation
-    }
    
     /**
      *   Method from CLLocationManagerDelegate protocol which is called when location is updated.
      *   I centres the map on current location or (if not available) on default location (Lodz, Poland).
+     *   There is also TomTom's solution:
+     *     self.ttMapView.isShowsUserLocation = true
+     *       ttMapView.userLocation (...)
      */
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
+        
         currentLocation = locations.last
-        if(self.objectFromCategorySearch == nil){
             //todo: magic number
             if let coordintion2D = currentLocation?.coordinate{
-                ttMapView.center(on: coordintion2D, withZoom: 10)
-                addCurrentUserLocation()
+                addCurrentUserLocation(currentLocation: coordintion2D, center: true)
             }else{
-                //todo: magic number
+                
                 let defaultCoordinationOfLodzPoland =  CLLocationCoordinate2D(latitude: 51.759, longitude: 19.458 )
-                // manually add fake user location
-                ttMapView.annotationManager?.add(TTAnnotation(coordinate: defaultCoordinationOfLodzPoland))
-                ttMapView.center(on: defaultCoordinationOfLodzPoland , withZoom: 10)
+                addCurrentUserLocation(currentLocation: defaultCoordinationOfLodzPoland, center: true)
             }
-        }else{
-            addCurrentUserLocation()
-        }
-        
     }
     
+    /**
+     *   Adds annotation representing current user locaiton.
+     */
+    private func addCurrentUserLocation(currentLocation: CLLocationCoordinate2D, center: Bool){
+    
+            if(self.objectFromCategorySearch == nil && center){
+                ttMapView.center(on: currentLocation, withZoom: 10)
+            }
+            let annotation = createCustomAnnotation(withCoordinates: currentLocation, withName: "currentLocationImg.jpg",withTag: "currentLocation")
+        
+            ttMapView.annotationManager?.add(annotation!)
+        
+    }
+
     
     /**
      *   Methods configurates location manager and ask for permission if
@@ -186,7 +261,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *   Method builds query and determine the fastest route from
      *   user's current location to the specific point on the map.
      */
-    private func paintTheFastestWay(coordinates: CLLocationCoordinate2D){
+    public func paintTheFastestWay(coordinates: CLLocationCoordinate2D){
         //unwrap current (device) location
         if let currentCoordinates = currentLocation?.coordinate{
             let routeType: TTOptionTypeRoute = .fastest
@@ -209,13 +284,13 @@ class ViewController: UIViewController, UISearchBarDelegate,
                     }
                     
                 }else{
-                    //todo: Toast informin user
+                    self.printNotAvailableToast()
                     print("Result not available")
                 }
             })
             
         }else{
-            //todo: toast
+          printNotAvailableToast()
           print("Error. Current location not available")
         }
         
@@ -229,17 +304,22 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         let ttMapRoute = TTMapRoute(routeData: dataSet)
         
-        
         if let routeManager = self.ttMapView.routeManager{
             
             routeManager.removeAllRoutes()
             routeManager.add(ttMapRoute)
             
         }else{
-            //todo: Toast!
+            printNotAvailableToast()
             print("Error occured with route manager!")
         }
         
+    }
+  
+    
+    private func printNotAvailableToast(){
+        let projectHelper = ProjectHelpers()
+        projectHelper.showToast(viewController: self, message: "Result not available")
     }
     
     /**
@@ -258,12 +338,20 @@ class ViewController: UIViewController, UISearchBarDelegate,
         }
     }
 
+    
+    /**
+     *   Method from TTAnnotationDelegate called when users taps the annotation.
+     */
+    func annotationSelected(_ annotation: TTAnnotation) {
+        selectedAnnotation = annotation
+    }
+    
+    
     /**
      *   Method from TTAnnotationDelegate, called when user taps the icon on a map.
      *   @return TTCalloutView representin custom balloon
      */
     func view(forSelectedAnnotation selectedAnnotation: TTAnnotation) -> (UIView & TTCalloutView) {
-        
         
         // create custom callout
         let callout = createCustomCallount(selectedAnnotation: selectedAnnotation)
@@ -291,21 +379,23 @@ class ViewController: UIViewController, UISearchBarDelegate,
             
             description = "\(self.objectFromCategorySearch!.poi.name) | \(self.objectFromCategorySearch!.address.freeformAddress)"
             
-            }else if(coordinationOfClickedAnnotation == coordintion2D){
+        }else if(coordinationOfClickedAnnotation == coordintion2D){
             
-                description = "You're here!"
-                callout.navigationBtn.isEnabled = false
+            description = "You're here!"
+            callout.navigationBtn.isEnabled = false
             
-                    }else{
-                        description = "\(selectedAnnotation.coordinate.latitude)  \(selectedAnnotation.coordinate.longitude)"
-                    }
+        }else{
+            description = "\(selectedAnnotation.coordinate.latitude)  \(selectedAnnotation.coordinate.longitude)"
+        }
+        
         
         callout.delegate = self
         callout.setDescription(description: description)
         return callout
     }
-
- 
+    
+    
+    
     
 }
 

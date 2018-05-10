@@ -11,8 +11,8 @@ import UIKit
 
 /**
  *  Custom protocol for callbacks when 'navigate' button on
- *  custom balloon is clicked
+ *  custom balloon is clicked (delegate pattern)
  */
-protocol NavigaitonBtnBalloonDelegate {
-    func navigationBtnClickedAction(view: UIButton)
+@objc protocol NavigaitonBtnBalloonDelegate {
+   @objc func navigationBtnClickedAction(view: UIButton)
 }

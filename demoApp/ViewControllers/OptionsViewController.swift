@@ -76,12 +76,13 @@ class OptionsViewController: UIViewController {
     /**
      *  Resotres the previous state (if there was any)
      */
-    private func setInitialStateDependingOnNsDefaults(){
+    public func setInitialStateDependingOnNsDefaults(){
         if(projectHelper.readFromUserDefaults(key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)){
             enableTrafficFlowSwitch.setOn(true, animated: true)
         }else{
             enableTrafficFlowSwitch.setOn(false, animated: true)
         }
+     
         if(projectHelper.readFromUserDefaults(key: AppStrings.ENABLE_INCIDENTS_CONST_)){
             enableIncidentsSwitch.setOn(true, animated: true)
         }else{

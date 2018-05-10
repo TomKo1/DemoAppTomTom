@@ -14,7 +14,7 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     var searchQuery:String? = String()
     var resultArray: Array = Array<TTSearchResult>()
     
-    var categoryName: String = String()
+    var categoryIndex: Int = -1 //todo: consider Optional
     var selectedResult: TTSearchResult = TTSearchResult()
     
     @IBOutlet weak var tableView: UITableView!
@@ -40,10 +40,10 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     */
     func search(_ search: TTSearch!, completedWithResult result: [TTSearchResult]!) {
         let categorySearchUtilities = SearchUtilities(delegateVC: self)
-        resultArray = categorySearchUtilities.filterThroughResultArray(resultArray: result, categoryName: categoryName)
+        resultArray = categorySearchUtilities.filterThroughResultArray(resultArray: result, categoryIndex: categoryIndex)
         if(resultArray.isEmpty){
             let projectHelpers = ProjectHelpers()
-            projectHelpers.showToast(viewController: self, message: "No results available!")
+                projectHelpers.showToast(viewController: self, message: "No results available!")
             }else{
                 tableView.reloadData()
             }
