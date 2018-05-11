@@ -11,7 +11,10 @@ import MapKit
 import TomTomOnlineSDKMaps
 import TomTomOnlineSDKSearch
 import TomTomOnlineSDKRouting
-
+//https://github.com/jonkykong/SideMenu
+// using only for convinience -> normally I would try to impolement it on my
+// own or use built-in views
+import SideMenu
 
 //todo: tests
 //todo: separate delegate
@@ -44,12 +47,20 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         self.configTomTomMapTiles()
         
-       
+        // config drawer
+        self.configDrawer()
         
         // display
         self.view = ttMapView;
     }
     
+    /**
+    *   Configurates drawer
+    */
+    // method is short but it is for clean code and opportunity to extend it's functionality
+    private func configDrawer(){
+        SideMenuManager.default.menuPresentMode = .menuSlideIn
+    }
     
     
     
@@ -69,16 +80,16 @@ class ViewController: UIViewController, UISearchBarDelegate,
         if(objectFromCategorySearch != nil){
             
             ttMapView.center(on: objectFromCategorySearch!.position, withZoom: 10)
-            ttMapView.annotationManager?.removeAllAnnotations()
+            ttMapView.annotationManager.removeAllAnnotations()
             
             let annotation = createCustomAnnotation(withCoordinates: objectFromCategorySearch!.position, withName: "mapIcon.jpg", withTag: "objectFound")
             
-            ttMapView.annotationManager?.add(annotation!)
+            ttMapView.annotationManager.add(annotation!)
             
         }
     
         
-        ttMapView.annotationManager?.delegate = self
+        ttMapView.annotationManager.delegate = self
         
         restoreUserOptions()
         
@@ -124,7 +135,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         let image = UIImage(named:
             withName)
-        let annotation = TTAnnotation(coordinate: withCoordinates, image: image, tag: withTag, anchor: TTAnnotationAnchor.center, type: TTAnnotationType.focal)
+        let annotation = TTAnnotation(coordinate: withCoordinates, image: image!, tag: withTag, anchor: TTAnnotationAnchor.center, type: TTAnnotationType.focal)
         
         return annotation
         
@@ -135,6 +146,9 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *  Called when the user clicks the btn responsible for launcing searching
      */
     //todo: test -> bounding & action
+    
+    
+    
     @IBAction func searchBtnClicked(_ sender: Any) {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.delegate = self
@@ -157,7 +171,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
      */
     func search(_ search: TTSearch!, completedWithResult result: [TTSearchResult]!) {
         
-        ttMapView.annotationManager?.removeAllAnnotations()
+        ttMapView.annotationManager.removeAllAnnotations()
         
         if let coordintion2D = currentLocation?.coordinate{
             addCurrentUserLocation(currentLocation: coordintion2D, center: false)
@@ -171,7 +185,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
             let annotation = createCustomAnnotation(withCoordinates: coordinate, withName: "mapIcon.jpg", withTag: "resultCategory")
                 
 
-            ttMapView.annotationManager?.add(annotation!)
+            ttMapView.annotationManager.add(annotation!)
         }
     }
     
@@ -180,7 +194,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *   Method from TTSearchDelegate called when there is an error
      *   while 'general' (in this case) search.
      */
-    func search(_ search: TTSearch!, failedWithError error: TTResponseError!) {
+    func search(_ search: TTSearch, failedWithError error: TTResponseError) {
        let projectHelpers = ProjectHelpers()
         projectHelpers.showToast(viewController: self, message: "Error while searching. Please try again.")
     }
@@ -216,7 +230,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
             }
             let annotation = createCustomAnnotation(withCoordinates: currentLocation, withName: "currentLocationImg.jpg",withTag: "currentLocation")
         
-            ttMapView.annotationManager?.add(annotation!)
+        ttMapView.annotationManager.add(annotation!)
         
     }
 
@@ -239,7 +253,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     *   It adds a new annotation it this place.
     */
     func mapView(_ mapView: TTMapView, didLongPress coordinate: CLLocationCoordinate2D){
-        mapView.annotationManager?.add(TTAnnotation(coordinate: coordinate))
+        mapView.annotationManager.add(TTAnnotation(coordinate: coordinate))
     }
 
     
@@ -304,15 +318,12 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         let ttMapRoute = TTMapRoute(routeData: dataSet)
         
-        if let routeManager = self.ttMapView.routeManager{
+        let routeManager = self.ttMapView.routeManager
             
             routeManager.removeAllRoutes()
             routeManager.add(ttMapRoute)
             
-        }else{
-            printNotAvailableToast()
-            print("Error occured with route manager!")
-        }
+     
         
     }
   

@@ -80,12 +80,12 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
     */
     //"tested"
     func performCategorySearch(withQuery query: String?) {
-        let queryBuilder = TTSearchQueryBuilder.create(withTerm: query)
+        let queryBuilder = TTSearchQueryBuilder.create(withTerm: query!)
         let search = TTSearch()
-        queryBuilder?.withCategory(true)
-        queryBuilder?.withPosition((locationManager.location?.coordinate)!)
-        let searchQuery: TTSearchQuery? = queryBuilder?.build()
-        search.search(with: searchQuery, withAsyncDelegate: callBackDelegate)
+        queryBuilder.withCategory(true)
+        queryBuilder.withPosition((locationManager.location?.coordinate)!)
+        let searchQuery: TTSearchQuery? = queryBuilder.build()
+        search.search(with: searchQuery!, withAsyncDelegate: callBackDelegate)
     }
     
     /**
@@ -97,9 +97,9 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
         // this is just general searching not limited in any way
         // for 'category search' please use btn in main menu
         let search = TTSearch()
-        let queryBuilder = TTSearchQueryBuilder.create(withTerm: query)
-        let searchQuery: TTSearchQuery? = queryBuilder?.build()
-        search.search(with: searchQuery, withAsyncDelegate: callBackDelegate)
+        let queryBuilder = TTSearchQueryBuilder.create(withTerm: query!)
+        let searchQuery: TTSearchQuery? = queryBuilder.build()
+        search.search(with: searchQuery!, withAsyncDelegate: callBackDelegate)
     }
 
     
