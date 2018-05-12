@@ -53,7 +53,6 @@ class MenuDrawerTableViewController: UITableViewController {
             performSegue(withIdentifier: "segueToMapsOptions", sender: self)
         default:
                 print("No such option!")
-              //performSegue(withIdentifier: "segueToMapsOptions", sender: self)
         }
     }
    

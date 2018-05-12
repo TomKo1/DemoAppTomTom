@@ -39,7 +39,7 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     * Receives results of category search and displays them or displays
     * UIAlertDialog ('Toast') informing that there are no data.
     */
-    func search(_ search: TTSearch!, completedWithResult result: [TTSearchResult]!) {
+    func search(_ search: TTSearch, completedWithResult result: [TTSearchResult]) {
         let categorySearchUtilities = SearchUtilities(delegateVC: self)
         resultArray = categorySearchUtilities.filterThroughResultArray(resultArray: result, categoryIndex: categoryIndex)
         if(resultArray.isEmpty){
@@ -53,7 +53,7 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     /**
     *   Called when there is an error while category search.
     */
-    func search(_ search: TTSearch!, failedWithError error: TTResponseError!) {
+    func search(_ search: TTSearch, failedWithError error: TTResponseError) {
         let projectHelpers = ProjectHelpers()
         projectHelpers.showToast(viewController: self, message: "Error while castegory search occured! Please try later.")
     }

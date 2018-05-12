@@ -1,8 +1,4 @@
-//
-//  ViewController.swift
-//  demoApp
-//
-//  Created by Tomasz Kot on 21.04.2018.
+//  Created by Tomasz Kot
 //  Copyright © 2018 Tomasz Kot. All rights reserved.
 //
 
@@ -16,11 +12,8 @@ import TomTomOnlineSDKRouting
 // own or use built-in views
 import SideMenu
 
-//todo: tests
-//todo: separate delegate
-//todo: drawer!
 /**
- * Main View (map) controller. If there were more delegates(more code) I would consider removing them
+ * Main View (map) controller. If there were more delegates(more code) I would consider removing them (by doing so you have to make a 'class variable' not to lose it from memory and then assign it in the method)
  * to separate classes.
  */
 class ViewController: UIViewController, UISearchBarDelegate,
@@ -31,13 +24,12 @@ class ViewController: UIViewController, UISearchBarDelegate,
     */
     let locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocation?
-    //currently selected annotation or nil if not sleected
-    var selectedAnnotation: TTAnnotation?
     //TomTom's map view
     var ttMapView:TTMapView = TTMapView()
     //fields 'injected' when there is a segue from category Search
     var objectFromCategorySearch: TTSearchResult?
-   
+  
+    
     
 
     override func viewDidLoad() {
@@ -57,7 +49,6 @@ class ViewController: UIViewController, UISearchBarDelegate,
     /**
     *   Configurates drawer
     */
-    // method is short but it is for clean code and opportunity to extend it's functionality
     private func configDrawer(){
         SideMenuManager.default.menuPresentMode = .menuSlideIn
     
@@ -77,7 +68,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         
         
-        //todo: not tested -> fix this ! :(
+        //todo: not tested -> fix this ! :( UITesting?
         if(objectFromCategorySearch != nil){
             
             ttMapView.center(on: objectFromCategorySearch!.position, withZoom: 10)
@@ -88,7 +79,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
             ttMapView.annotationManager.add(annotation!)
             
         }
-    
+
         
         ttMapView.annotationManager.delegate = self
         
@@ -134,7 +125,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     
     
     /**
-     * helper 'facrtory' creating TTAnnotations with specific image
+     * helper 'factory (not at all) method' creating TTAnnotations with specific image
      *
      */
     //tested
@@ -145,7 +136,6 @@ class ViewController: UIViewController, UISearchBarDelegate,
         let annotation = TTAnnotation(coordinate: withCoordinates, image: image!, tag: withTag, anchor: TTAnnotationAnchor.center, type: TTAnnotationType.focal)
         
         return annotation
-        
     }
     
     
@@ -153,14 +143,12 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *  Called when the user clicks the btn responsible for launcing searching
      */
     //todo: test -> bounding & action
-    
-    
-    
     @IBAction func searchBtnClicked(_ sender: Any) {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.delegate = self
         present(searchController, animated: true,completion:  nil)
     }
+    
     
     /**
      *   Method from UISearchBarDelegate called when the UIBarSearchButton is
@@ -176,7 +164,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *   Method from TTSearchDelegate called when 'general' search has ended and
      *   there is result available.
      */
-    func search(_ search: TTSearch!, completedWithResult result: [TTSearchResult]!) {
+    func search(_ search: TTSearch, completedWithResult result: [TTSearchResult]) {
         
         ttMapView.annotationManager.removeAllAnnotations()
         
@@ -357,6 +345,8 @@ class ViewController: UIViewController, UISearchBarDelegate,
     }
 
     
+    var selectedAnnotation: TTAnnotation?
+    
     /**
      *   Method from TTAnnotationDelegate called when users taps the annotation.
      */
@@ -411,6 +401,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
         callout.setDescription(description: description)
         return callout
     }
+   
     
     
     
