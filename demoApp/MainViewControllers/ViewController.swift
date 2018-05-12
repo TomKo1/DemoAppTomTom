@@ -60,6 +60,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     // method is short but it is for clean code and opportunity to extend it's functionality
     private func configDrawer(){
         SideMenuManager.default.menuPresentMode = .menuSlideIn
+    
     }
     
     
@@ -91,8 +92,14 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         ttMapView.annotationManager.delegate = self
         
-        restoreUserOptions()
         
+        
+    }
+    
+    // because of the 'back button' from options
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+         restoreUserOptions()
     }
     
     
@@ -101,7 +108,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     /**
      *   Restores user's options from UserDefaults ('shared preferences').
      */
-    //tested
+    //tested -> retest it ! and refactor it :)
     private func restoreUserOptions(){
         let projectHelpers = ProjectHelpers()
         
@@ -112,17 +119,17 @@ class ViewController: UIViewController, UISearchBarDelegate,
             ttMapView.trafficType = .flow
             
             ttMapView.trafficFlowOn = true
-        }
+            }else{
+                ttMapView.trafficFlowOn = false
+            }
         if(projectHelpers.readFromUserDefaults(key: AppStrings.ENABLE_INCIDENTS_CONST_)){
-            //todo: ??
-            ttMapView.trafficTile = .raster
+           
             ttMapView.trafficType = .incidents
-    
             ttMapView.trafficIncidentsOn = true
-            // .raster ?!
-            ttMapView.trafficIncidentsStyle = .init(rawValue: 0)
             
-        }
+            }else{
+                ttMapView.trafficIncidentsOn = false
+            }
     }
     
     

@@ -9,6 +9,7 @@
 import UIKit
 import TomTomOnlineSDKSearch
 
+//todo:  extract delegate : )
 class CategorySearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TTSearchDelegate {
 
     var searchQuery:String? = String()
@@ -53,8 +54,8 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     *   Called when there is an error while category search.
     */
     func search(_ search: TTSearch!, failedWithError error: TTResponseError!) {
-        //todo: toast
-        print("Error occured")
+        let projectHelpers = ProjectHelpers()
+        projectHelpers.showToast(viewController: self, message: "Error while castegory search occured! Please try later.")
     }
 
     /************************************
@@ -68,6 +69,7 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         //todo:implement my own UITableView
+        //todo: add reusable table view
         let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
         let result = resultArray[indexPath.row]
         //todo: give name, address and distance :) -> custom view

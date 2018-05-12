@@ -22,31 +22,13 @@ class OptionsViewController: UIViewController {
     
     @IBOutlet weak var enableIncidentsSwitch: UISwitch!
 
-    @IBOutlet weak var searchQueryOptions: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setInitialStateDependingOnNsDefaults()
     }
-    
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    /**
-     *   Overwritten for segue perform
-     */
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if(segue.destination is CategorySelectViewController){
-            let categorySelectSearchViewController = segue.destination as! CategorySelectViewController
-            categorySelectSearchViewController.searchQuery = self.searchQueryOptions?.text
-        }
-        
-    }
+  
     
     /**
     *   Switch enables traffic flow and stores that fact in UserDefaults
