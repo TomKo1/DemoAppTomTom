@@ -1,11 +1,3 @@
-//
-//  CategorySearchViewController.swift
-//  demoApp
-//
-//  Created by Tomasz Kot on 28.04.2018.
-//  Copyright © 2018 Tomasz Kot. All rights reserved.
-//
-
 import UIKit
 import TomTomOnlineSDKSearch
 
@@ -28,12 +20,6 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
         categorySearchUtilities.performCategorySearch(withQuery: searchQuery)
     
     }
- 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     
     /**
     * Receives results of category search and displays them or displays
@@ -69,8 +55,7 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         //todo:implement my own UITableView
-        //todo: add reusable table view
-        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
+         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let result = resultArray[indexPath.row]
         //todo: give name, address and distance :) -> custom view
         let textToShow = "\(result.poi.name) \(result.distance.rounded()) meters"

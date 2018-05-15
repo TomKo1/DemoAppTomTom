@@ -1,11 +1,3 @@
-//
-//  ProjectHelpers.swift
-//  demoApp
-//
-//  Created by Tomasz Kot on 02.05.2018.
-//  Copyright © 2018 Tomasz Kot. All rights reserved.
-//
-
 import UIKit
 
 
@@ -57,7 +49,7 @@ class ProjectHelpers: NSObject {
         viewController.present(alert, animated: true)
         
         // duration in seconds
-        let duration: Double = 5
+        let duration: Double = 3
     
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration) {
             alert.dismiss(animated: true)

@@ -1,7 +1,3 @@
-//  Created by Tomasz Kot
-//  Copyright © 2018 Tomasz Kot. All rights reserved.
-//
-
 import UIKit
 import MapKit
 import TomTomOnlineSDKMaps
@@ -16,17 +12,19 @@ import SideMenu
  * Main View (map) controller. If there were more delegates(more code) I would consider removing them (by doing so you have to make a 'class variable' not to lose it from memory and then assign it in the method)
  * to separate classes.
  */
+
+//todo: map theme and language :)
+//todo: magic number and strings
 class ViewController: UIViewController, UISearchBarDelegate,
                         TTSearchDelegate, CLLocationManagerDelegate, TTMapViewDelegate,
                         NavigaitonBtnBalloonDelegate, TTAnnotationDelegate {
-    /**
-    *  Fields for current user's lcoation managment.
-    */
+
+    // Fields for current user's lcoation managment.
     let locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocation?
-    //TomTom's map view
+    //  TomTom's map view
     var ttMapView:TTMapView = TTMapView()
-    //fields 'injected' when there is a segue from category Search
+    //  Fields 'injected' when there is a segue from category Search
     var objectFromCategorySearch: TTSearchResult?
   
     
@@ -51,7 +49,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     */
     private func configDrawer(){
         SideMenuManager.default.menuPresentMode = .menuSlideIn
-    
+        // futher code...
     }
     
     
@@ -68,12 +66,12 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         
         
-        //todo: not tested -> fix this ! :( UITesting?
+        //tested
         if(objectFromCategorySearch != nil){
             
             ttMapView.center(on: objectFromCategorySearch!.position, withZoom: 10)
             ttMapView.annotationManager.removeAllAnnotations()
-            
+        
             let annotation = createCustomAnnotation(withCoordinates: objectFromCategorySearch!.position, withName: "mapIcon.jpg", withTag: "objectFound")
             
             ttMapView.annotationManager.add(annotation!)
@@ -154,7 +152,6 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *   Method from UISearchBarDelegate called when the UIBarSearchButton is
      *    clicked -> perform general search.
      */
-     //todo: test -> bounding & action
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let searchUtilities = SearchUtilities(delegateVC: self)
         searchUtilities.perfomGeneralSearch(withQuery: searchBar.text)

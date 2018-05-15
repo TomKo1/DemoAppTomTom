@@ -39,7 +39,7 @@ class CustomBalloonsView: UIView,TTCalloutView {
     @IBOutlet weak var navigationBtn: UIButton!
     
     public func setDescription(description: String!){
-        label.text = description
+        self.label.text = description
     }
     
     
