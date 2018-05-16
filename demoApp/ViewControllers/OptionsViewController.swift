@@ -1,4 +1,5 @@
 import UIKit
+import TomTomOnlineSDKMaps
 
 /**
  * ViewController responsible for setting options of the map.
@@ -27,24 +28,40 @@ class OptionsViewController: UIViewController {
     *   Switch enables traffic flow and stores that fact in UserDefaults
     */
     @IBAction func enableTrafficFlowSwtchMoved(_ sender: UISwitch) {
-        overrideUserDefaults(switchRef: enableTrafficFlowSwitch, key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)
+        overrideSwitchUserDefaults(switchRef: enableTrafficFlowSwitch, key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)
     }
     
     /**
     *  Switch enables incidents and stores that fact in UserDefaults
     */
     @IBAction func incidentsEnableSwitchMoved(_ sender: UISwitch) {
-        overrideUserDefaults(switchRef: enableIncidentsSwitch, key: AppStrings.ENABLE_INCIDENTS_CONST_)
+        overrideSwitchUserDefaults(switchRef: enableIncidentsSwitch, key: AppStrings.ENABLE_INCIDENTS_CONST_)
     }
+    
+    
+    @IBAction func languageToggle(_ sender: UISegmentedControl) {
+        switch(sender.selectedSegmentIndex){
+        case 0:
+            // raw value of TTLanguage is integer
+            // there are also other options
+            projectHelper.putIntToUserDefaults(key: AppStrings.LANGUAGE_CONST_, value: Int(TTLanguage.polish.rawValue))
+        case 1:
+            projectHelper.putIntToUserDefaults(key: AppStrings.LANGUAGE_CONST_, value: Int(TTLanguage.englishUS.rawValue))
+        default:
+            // polish by default
+            projectHelper.putIntToUserDefaults(key: AppStrings.LANGUAGE_CONST_, value: Int(TTLanguage.polish.rawValue))
+        }
+    }
+    
     
     /**
     *   Overrides UserDefaults for specific key
     */
-    private func overrideUserDefaults(switchRef: UISwitch, key: String){
+    private func overrideSwitchUserDefaults(switchRef: UISwitch, key: String){
         if(switchRef.isOn){
-            projectHelper.putToUserDefaults(key: key, value: true)
+            projectHelper.putBoolToUserDefaults(key: key, value: true)
         }else{
-            projectHelper.putToUserDefaults(key: key, value: false)
+            projectHelper.putBoolToUserDefaults(key: key, value: false)
         }
     }
     
@@ -52,13 +69,13 @@ class OptionsViewController: UIViewController {
      *  Resotres the previous state (if there was any)
      */
     public func setInitialStateDependingOnNsDefaults(){
-        if(projectHelper.readFromUserDefaults(key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)){
+        if(projectHelper.readBoolFromUserDefaults(key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)){
             enableTrafficFlowSwitch.setOn(true, animated: true)
         }else{
             enableTrafficFlowSwitch.setOn(false, animated: true)
         }
      
-        if(projectHelper.readFromUserDefaults(key: AppStrings.ENABLE_INCIDENTS_CONST_)){
+        if(projectHelper.readBoolFromUserDefaults(key: AppStrings.ENABLE_INCIDENTS_CONST_)){
             enableIncidentsSwitch.setOn(true, animated: true)
         }else{
             enableIncidentsSwitch.setOn(false, animated: true)

@@ -11,9 +11,10 @@ class ProjectHelpers: NSObject {
     *  Method reads boolean value from UserDefaults
     *   for specific key.
     */
-    func readFromUserDefaults(key: String) -> Bool {
+    func readBoolFromUserDefaults(key: String) -> Bool {
         let preferences = UserDefaults.standard
         // bo jak nie istnieje to jest false -> domyslnie wylaczone
+
         return  preferences.bool(forKey: key)
     }
     
@@ -21,10 +22,30 @@ class ProjectHelpers: NSObject {
     * Method puts a boolean value into UserDefaults
     *  connected with a specific key.
     */
-    func putToUserDefaults( key: String, value: Bool){
+    func putBoolToUserDefaults( key: String, value: Bool){
         let preferences = UserDefaults.standard
         preferences.set(value, forKey: key)
         didSave(preferences: preferences)
+    }
+    
+    /**
+     * Method puts a integer value into UserDefaults
+     *  connected with a specific key.
+     */
+    // maybe any just any instead of all methods(?)
+    func putIntToUserDefaults(key: String, value: Int){
+        let preferences = UserDefaults.standard
+        preferences.set(value, forKey: key)
+        didSave(preferences: preferences)
+    }
+    /**
+     *  Method reads integer value from UserDefaults
+     *   for specific key.
+     */
+    func readIntegerFromUserDefaults(key: String) -> Int {
+        let preferences = UserDefaults.standard
+       
+        return  preferences.integer(forKey: key)
     }
     
     

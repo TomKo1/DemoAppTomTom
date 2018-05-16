@@ -1,7 +1,7 @@
 import UIKit
 import TomTomOnlineSDKSearch
 
-//todo:  extract delegate : )
+
 class CategorySearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TTSearchDelegate {
 
     var searchQuery:String? = String()

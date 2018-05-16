@@ -1,11 +1,3 @@
-//
-//  TypePhraseViewController.swift
-//  demoApp
-//
-//  Created by Tomasz Kot on 12.05.2018.
-//  Copyright © 2018 Tomasz Kot. All rights reserved.
-//
-
 import UIKit
 //todo: get rid of this view controller
 class TypePhraseViewController: UIViewController {

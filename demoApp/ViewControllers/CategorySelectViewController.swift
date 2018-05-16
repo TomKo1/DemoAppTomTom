@@ -31,7 +31,7 @@ class CategorySelectViewController: UIViewController, UITableViewDelegate,UITabl
     }
     
     /***************************************************************
-    *   Methods preparing cells for TableView
+     *    Methods preparing cells for TableView
     ****************************************************************/
      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoryList.count

@@ -13,8 +13,8 @@ import SideMenu
  * to separate classes.
  */
 
-//todo: map theme and language :)
 //todo: magic number and strings
+// had issue with Node.js (server on Mac -> mixing with Yoeman/Angular) and couldn't edit style JSON easily to make dark theme of the map
 class ViewController: UIViewController, UISearchBarDelegate,
                         TTSearchDelegate, CLLocationManagerDelegate, TTMapViewDelegate,
                         NavigaitonBtnBalloonDelegate, TTAnnotationDelegate {
@@ -50,6 +50,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     private func configDrawer(){
         SideMenuManager.default.menuPresentMode = .menuSlideIn
         // futher code...
+
     }
     
     
@@ -64,26 +65,24 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         ttMapView.delegate = self
         
+        paintResultOfCategorySearchIfPresent()
         
-        
-        //tested
+        ttMapView.annotationManager.delegate = self
+    }
+    
+    private func paintResultOfCategorySearchIfPresent(){
         if(objectFromCategorySearch != nil){
             
             ttMapView.center(on: objectFromCategorySearch!.position, withZoom: 10)
             ttMapView.annotationManager.removeAllAnnotations()
-        
+            
             let annotation = createCustomAnnotation(withCoordinates: objectFromCategorySearch!.position, withName: "mapIcon.jpg", withTag: "objectFound")
             
             ttMapView.annotationManager.add(annotation!)
             
         }
-
-        
-        ttMapView.annotationManager.delegate = self
-        
-        
-        
     }
+    
     
     // because of the 'back button' from options
     override func viewWillAppear(_ animated: Bool) {
@@ -101,7 +100,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     private func restoreUserOptions(){
         let projectHelpers = ProjectHelpers()
         
-        if(projectHelpers.readFromUserDefaults(key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)){
+        if(projectHelpers.readBoolFromUserDefaults(key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)){
             // where is vector ?! -> default flow doesn't work with vector?
             //todo: ???
             ttMapView.trafficTile = .raster
@@ -111,7 +110,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
             }else{
                 ttMapView.trafficFlowOn = false
             }
-        if(projectHelpers.readFromUserDefaults(key: AppStrings.ENABLE_INCIDENTS_CONST_)){
+        if(projectHelpers.readBoolFromUserDefaults(key: AppStrings.ENABLE_INCIDENTS_CONST_)){
            
             ttMapView.trafficType = .incidents
             ttMapView.trafficIncidentsOn = true
@@ -171,15 +170,21 @@ class ViewController: UIViewController, UISearchBarDelegate,
         
         ttMapView.center(on: CLLocationCoordinate2D(latitude: 0, longitude: 0), withZoom: 0)
         
+        addAppriopriateAnnotationsFromResult(result: result)
+        
+    }
+    
+    private func addAppriopriateAnnotationsFromResult(result: [TTSearchResult]){
         for oneResult in result {
             let coordinate = oneResult.position
-    
+            
             let annotation = createCustomAnnotation(withCoordinates: coordinate, withName: "mapIcon.jpg", withTag: "resultCategory")
-                
-
+            
+            
             ttMapView.annotationManager.add(annotation!)
         }
     }
+    
     
     
     /**
@@ -280,27 +285,31 @@ class ViewController: UIViewController, UISearchBarDelegate,
                 
                 (result: TTRouteResult?, error: TTResponseError?) -> Void in
                 
-                if let fullRoutes = result?.routes {
+                if let unwrappedFullRoutes = result?.routes {
                     
-                    //loop just for safety -> in this app
-                    // there is only one route but there are other
-                    // 'options' in API where there are more routes.
-                    for singleRoute in fullRoutes {
-                        self.drawResultRoute( route: singleRoute)
-                    }
+                    self.loopThroughFullRoutesAndDraw(fullRoutes: unwrappedFullRoutes)
                     
                 }else{
-                    self.printNotAvailableToast()
-                    print("Result not available")
+                    self.showNotAvailableToast()
                 }
             })
             
         }else{
-          printNotAvailableToast()
-          print("Error. Current location not available")
+          showNotAvailableToast()
         }
         
     }
+    
+    private func loopThroughFullRoutesAndDraw(fullRoutes: [TTFullRoute]){
+        //loop just for safety -> in this app
+        // there is only one route but there are other
+        // 'options' in API where there are more routes.
+        for singleRoute in fullRoutes {
+            self.drawResultRoute( route: singleRoute)
+        }
+    }
+    
+    
     /**
      *   Helper for paintTheFastestWay method which draws specific route.
      *   (clean code) -> short methods.
@@ -320,7 +329,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
     }
   
     
-    private func printNotAvailableToast(){
+    private func showNotAvailableToast(){
         let projectHelper = ProjectHelpers()
         projectHelper.showToast(viewController: self, message: "Result not available")
     }
@@ -368,13 +377,14 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *  Heleper for func view(forSelectedAnnotation selectedAnnotation: TTAnnotation) -> (UIView & TTCalloutView)
      *  method which configurates and returns custom callout.
      */
+    // try to make it shorter
     private func createCustomCallount(selectedAnnotation: TTAnnotation) ->( TTCalloutView & CustomBalloonsView) {
         let callout = (Bundle.main.loadNibNamed("CustomBalloon", owner: self, options: nil)?.first as? (CustomBalloonsView & TTCalloutView))!
         
         let coordinationOfClickedAnnotation = selectedAnnotation.coordinate
         
         var description = "No additional information"
-        //todo: it can be done differently & code reptition
+
         var coordintion2D = currentLocation?.coordinate
         if(coordintion2D == nil){
             coordintion2D = CLLocationCoordinate2D(latitude: 51.759, longitude: 19.458)
@@ -393,15 +403,11 @@ class ViewController: UIViewController, UISearchBarDelegate,
             description = "\(selectedAnnotation.coordinate.latitude)  \(selectedAnnotation.coordinate.longitude)"
         }
         
-        
+      
         callout.delegate = self
         callout.setDescription(description: description)
         return callout
     }
-   
-    
-    
-    
     
 }
 
