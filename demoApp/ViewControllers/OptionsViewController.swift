@@ -9,7 +9,6 @@ import TomTomOnlineSDKMaps
  */
 class OptionsViewController: UIViewController {
     
-    // useful methods
     let projectHelper = ProjectHelpers()
 
     @IBOutlet weak var enableTrafficFlowSwitch: UISwitch!
@@ -24,16 +23,10 @@ class OptionsViewController: UIViewController {
     }
   
     
-    /**
-    *   Switch enables traffic flow and stores that fact in UserDefaults
-    */
     @IBAction func enableTrafficFlowSwtchMoved(_ sender: UISwitch) {
         overrideSwitchUserDefaults(switchRef: enableTrafficFlowSwitch, key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)
     }
     
-    /**
-    *  Switch enables incidents and stores that fact in UserDefaults
-    */
     @IBAction func incidentsEnableSwitchMoved(_ sender: UISwitch) {
         overrideSwitchUserDefaults(switchRef: enableIncidentsSwitch, key: AppStrings.ENABLE_INCIDENTS_CONST_)
     }

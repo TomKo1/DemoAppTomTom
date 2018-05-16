@@ -7,7 +7,7 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
     var searchQuery:String? = String()
     var resultArray: Array = Array<TTSearchResult>()
     
-    var categoryIndex: Int = -1 //todo: consider Optional
+    var categoryIndex: Int = -1 
     var selectedResult: TTSearchResult = TTSearchResult()
     
     @IBOutlet weak var tableView: UITableView!
@@ -44,9 +44,9 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
         projectHelpers.showToast(viewController: self, message: "Error while castegory search occured! Please try later.")
     }
 
-    /************************************
+    /*
     * Table view managment
-    ************************************/
+    */
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resultArray.count
     }

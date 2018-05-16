@@ -33,8 +33,6 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
     */
     func filterThroughResultArray(resultArray: Array<TTSearchResult>, categoryIndex category: Int) -> Array<TTSearchResult>{
         
-        //todo: think over !
-        // comparing depending on codes -> comparing on string may be ineffective (?) -> another way?
         switch category{
         case 0:
             self.categoryCode = "PETROL_STATION"
@@ -43,7 +41,6 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
         case 2:
             self.categoryCode = "CASH_DISPENSER"
         default:
-            // if wrong code return all
             return resultArray
         }
        
@@ -51,11 +48,11 @@ class SearchUtilities: NSObject, CLLocationManagerDelegate {
     }
 
     /**
-     *  'Predicate' (Java) used to filter throug result array in
+     *  'Predicate' used to filter throug result array in
      *  filterThroughResultArray method.
      */
     private func predicate(singleResult: TTSearchResult) -> Bool{
-        //todo: think over this strange construction
+        
         for classification in singleResult.poi.classifications{
                 if(classification.code == self.categoryCode){
                     return true

@@ -1,38 +1,26 @@
 //
 //  CategorySelectViewController.swift
-//  demoApp
-//
-//  Created by Tomasz Kot on 29.04.2018.
-//  Copyright © 2018 Tomasz Kot. All rights reserved.
-//
-
 import UIKit
 
 /**
  *  Controller of TableView in which we can select a category in which we want to search.
  */
-//tested
 class CategorySelectViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
     
     var searchQuery:String?
     // basic categories in which we can choose while category search
     let categoryList = ["Petrol Station", "Restaurant", "Cash dispenser"]
-    //slsected category name or nil s
+    //selected category name or nil
     var categoryIndex: Int! = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
-    /***************************************************************
+    /*
      *    Methods preparing cells for TableView
-    ****************************************************************/
+     */
      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoryList.count
     }
@@ -40,10 +28,11 @@ class CategorySelectViewController: UIViewController, UITableViewDelegate,UITabl
     
      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
       
-        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell1")
-        cell.textLabel?.text = categoryList[indexPath.row]
         
-        return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: AppStrings.CATEGORY_SELECT_CELL_IDENTIFIER )
+        cell?.textLabel?.text = categoryList[indexPath.row]
+        
+        return cell!
     }
 
     /**
@@ -52,7 +41,7 @@ class CategorySelectViewController: UIViewController, UITableViewDelegate,UITabl
     */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.categoryIndex =  indexPath.row
-        performSegue(withIdentifier: "results", sender: self)
+        performSegue(withIdentifier: AppStrings.CATEGORY_SELECT_TO_RESULTS_SEGUE, sender: self)
     }
     
     /**

@@ -4,7 +4,7 @@ import TomTomOnlineSDKMaps
 import TomTomOnlineSDKSearch
 import TomTomOnlineSDKRouting
 //https://github.com/jonkykong/SideMenu
-// using only for convinience -> normally I would try to impolement it on my
+// using only for convinience -> normally I would try to implement it on my
 // own or use built-in views
 import SideMenu
 
@@ -12,8 +12,6 @@ import SideMenu
  * Main View (map) controller. If there were more delegates(more code) I would consider removing them (by doing so you have to make a 'class variable' not to lose it from memory and then assign it in the method)
  * to separate classes.
  */
-
-//todo: magic number and strings
 // had issue with Node.js (server on Mac -> mixing with Yoeman/Angular) and couldn't edit style JSON easily to make dark theme of the map
 class ViewController: UIViewController, UISearchBarDelegate,
                         TTSearchDelegate, CLLocationManagerDelegate, TTMapViewDelegate,
@@ -76,7 +74,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
             ttMapView.center(on: objectFromCategorySearch!.position, withZoom: 10)
             ttMapView.annotationManager.removeAllAnnotations()
             
-            let annotation = createCustomAnnotation(withCoordinates: objectFromCategorySearch!.position, withName: "mapIcon.jpg", withTag: "objectFound")
+            let annotation = createCustomAnnotation(withCoordinates: objectFromCategorySearch!.position, withName: AppStrings.MAP_ICON_JPG, withTag: "objectFound")
             
             ttMapView.annotationManager.add(annotation!)
             
@@ -96,13 +94,11 @@ class ViewController: UIViewController, UISearchBarDelegate,
     /**
      *   Restores user's options from UserDefaults ('shared preferences').
      */
-    //tested -> retest it ! and refactor it :)
     private func restoreUserOptions(){
         let projectHelpers = ProjectHelpers()
         
         if(projectHelpers.readBoolFromUserDefaults(key: AppStrings.ENABLE_TRAFFIC_FLOW_CONST_)){
-            // where is vector ?! -> default flow doesn't work with vector?
-            //todo: ???
+            //vector?
             ttMapView.trafficTile = .raster
             ttMapView.trafficType = .flow
             
@@ -178,7 +174,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
         for oneResult in result {
             let coordinate = oneResult.position
             
-            let annotation = createCustomAnnotation(withCoordinates: coordinate, withName: "mapIcon.jpg", withTag: "resultCategory")
+            let annotation = createCustomAnnotation(withCoordinates: coordinate, withName: AppStrings.MAP_ICON_JPG, withTag: "resultCategory")
             
             
             ttMapView.annotationManager.add(annotation!)
@@ -212,7 +208,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
                 addCurrentUserLocation(currentLocation: coordintion2D, center: true)
             }else{
                 
-                let defaultCoordinationOfLodzPoland =  CLLocationCoordinate2D(latitude: 51.759, longitude: 19.458 )
+                let defaultCoordinationOfLodzPoland =  CLLocationCoordinate2D(latitude: AppValues.lodzLatitude, longitude: AppValues.lodzLongitude )
                 addCurrentUserLocation(currentLocation: defaultCoordinationOfLodzPoland, center: true)
             }
     }
@@ -225,7 +221,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
             if(self.objectFromCategorySearch == nil && center){
                 ttMapView.center(on: currentLocation, withZoom: 10)
             }
-            let annotation = createCustomAnnotation(withCoordinates: currentLocation, withName: "currentLocationImg.jpg",withTag: "currentLocation")
+            let annotation = createCustomAnnotation(withCoordinates: currentLocation, withName: AppStrings.CURRENT_LOCATION_JPG,withTag: "currentLocation")
         
         ttMapView.annotationManager.add(annotation!)
         
@@ -262,8 +258,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
         if let coordinates = self.selectedAnnotation?.coordinate {
             paintTheFastestWay(coordinates: coordinates)
         }else{
-            //todo: toast informing user to select sth
-            print("No annotation selected!")
+           ProjectHelpers().showToast(viewController: self, message: "No annotation selected!")
         }
     }
 
@@ -374,12 +369,12 @@ class ViewController: UIViewController, UISearchBarDelegate,
     }
     
     /**
-     *  Heleper for func view(forSelectedAnnotation selectedAnnotation: TTAnnotation) -> (UIView & TTCalloutView)
+     *  Heleper for func view(forSelectedAnnotation selectedAnnotation:)
      *  method which configurates and returns custom callout.
      */
     // try to make it shorter
     private func createCustomCallount(selectedAnnotation: TTAnnotation) ->( TTCalloutView & CustomBalloonsView) {
-        let callout = (Bundle.main.loadNibNamed("CustomBalloon", owner: self, options: nil)?.first as? (CustomBalloonsView & TTCalloutView))!
+        let callout = (Bundle.main.loadNibNamed(AppStrings.CUSTOM_BALLOON_NAME, owner: self, options: nil)?.first as? (CustomBalloonsView & TTCalloutView))!
         
         let coordinationOfClickedAnnotation = selectedAnnotation.coordinate
         
@@ -387,7 +382,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
 
         var coordintion2D = currentLocation?.coordinate
         if(coordintion2D == nil){
-            coordintion2D = CLLocationCoordinate2D(latitude: 51.759, longitude: 19.458)
+            coordintion2D = CLLocationCoordinate2D(latitude: AppValues.lodzLatitude, longitude: AppValues.lodzLongitude)
         }
         if( ( objectFromCategorySearch != nil ) && coordinationOfClickedAnnotation ==
             objectFromCategorySearch?.position){

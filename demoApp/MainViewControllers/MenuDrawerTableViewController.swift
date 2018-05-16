@@ -1,11 +1,3 @@
-//
-//  MenuDrawerTableViewController.swift
-//  demoApp
-//
-//  Created by Tomasz Kot on 12.05.2018.
-//  Copyright © 2018 Tomasz Kot. All rights reserved.
-//
-
 import UIKit
 
 class MenuDrawerTableViewController: UITableViewController {
@@ -32,7 +24,7 @@ class MenuDrawerTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "menuCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: AppStrings.DRAWER_CELL_IDENTIFIER_, for: indexPath)
 
         cell.textLabel?.text = menuOptions[indexPath.row]
         
@@ -48,9 +40,9 @@ class MenuDrawerTableViewController: UITableViewController {
         
         switch(indexPath.row){
         case 0:
-            performSegue(withIdentifier: "menuToCategorySearchSegue", sender: self)
+            performSegue(withIdentifier: AppStrings.MENU_TO_CATEGORY_SEGUE_, sender: self)
         case 1:
-            performSegue(withIdentifier: "segueToMapsOptions", sender: self)
+            performSegue(withIdentifier: AppStrings.MENU_TO_OPTIONS_SEGUE, sender: self)
         default:
                 print("No such option!")
         }

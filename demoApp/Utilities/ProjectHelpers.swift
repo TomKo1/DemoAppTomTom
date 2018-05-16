@@ -57,7 +57,8 @@ class ProjectHelpers: NSObject {
         let didSave = preferences.synchronize()
         if !didSave{
             //todo: toast/exception
-            print("Preferences could not be saved!")
+            //print("Preferences could not be saved!")
+            fatalError("Preferences could not be saved!")
         }
     }
     
