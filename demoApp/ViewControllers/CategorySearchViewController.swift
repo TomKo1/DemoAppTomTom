@@ -57,7 +57,7 @@ class CategorySearchViewController: UIViewController, UITableViewDelegate, UITab
         //todo:implement my own UITableView
          let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let result = resultArray[indexPath.row]
-        //todo: give name, address and distance :) -> custom view
+        //todo: give name, address and distance  -> custom view
         let textToShow = "\(result.poi.name) \(result.distance.rounded()) meters"
         cell.textLabel?.text = textToShow
         return cell

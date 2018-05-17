@@ -12,7 +12,7 @@ import SideMenu
  * Main View (map) controller. If there were more delegates(more code) I would consider removing them (by doing so you have to make a 'class variable' not to lose it from memory and then assign it in the method)
  * to separate classes.
  */
-// had issue with Node.js (server on Mac -> mixing with Yoeman/Angular) and couldn't edit style JSON easily to make dark theme of the map
+// had issue with Node.js (server on Mac -> mixing with Yoeman/Angular) and couldn't edit style JSON easily to make dark theme of the map -> may fix later on my own
 class ViewController: UIViewController, UISearchBarDelegate,
                         TTSearchDelegate, CLLocationManagerDelegate, TTMapViewDelegate,
                         NavigaitonBtnBalloonDelegate, TTAnnotationDelegate {
@@ -372,7 +372,7 @@ class ViewController: UIViewController, UISearchBarDelegate,
      *  Heleper for func view(forSelectedAnnotation selectedAnnotation:)
      *  method which configurates and returns custom callout.
      */
-    // try to make it shorter
+    // nightmare -> make it shorter
     private func createCustomCallount(selectedAnnotation: TTAnnotation) ->( TTCalloutView & CustomBalloonsView) {
         let callout = (Bundle.main.loadNibNamed(AppStrings.CUSTOM_BALLOON_NAME, owner: self, options: nil)?.first as? (CustomBalloonsView & TTCalloutView))!
         

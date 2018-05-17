@@ -32,21 +32,6 @@ class OptionsViewController: UIViewController {
     }
     
     
-    @IBAction func languageToggle(_ sender: UISegmentedControl) {
-        switch(sender.selectedSegmentIndex){
-        case 0:
-            // raw value of TTLanguage is integer
-            // there are also other options
-            projectHelper.putIntToUserDefaults(key: AppStrings.LANGUAGE_CONST_, value: Int(TTLanguage.polish.rawValue))
-        case 1:
-            projectHelper.putIntToUserDefaults(key: AppStrings.LANGUAGE_CONST_, value: Int(TTLanguage.englishUS.rawValue))
-        default:
-            // polish by default
-            projectHelper.putIntToUserDefaults(key: AppStrings.LANGUAGE_CONST_, value: Int(TTLanguage.polish.rawValue))
-        }
-    }
-    
-    
     /**
     *   Overrides UserDefaults for specific key
     */

@@ -27,8 +27,9 @@ extension TTSearchResult {
     }
 }
 
-
+//      PROBLEM
 // another backdoor for TTSearchResult for testing (filterThroug..)
+//      HAD PROBLEM WITH THIS
 extension TTClassification {
     convenience init(_ code: String) {
         self.init()

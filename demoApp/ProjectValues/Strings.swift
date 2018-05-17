@@ -19,9 +19,11 @@ struct AppStrings{
     static let MENU_TO_OPTIONS_SEGUE = "segueToMapsOptions"
     static let CATEGORY_SELECT_TO_RESULTS_SEGUE = "results"
     
+    // assets images (.png) names
     static let MAP_ICON_JPG = "mapIcon.jpg"
     static let CURRENT_LOCATION_JPG = "currentLocationImg.jpg"
     
+    // others
     static let CUSTOM_BALLOON_NAME = "CustomBalloon"
     
 

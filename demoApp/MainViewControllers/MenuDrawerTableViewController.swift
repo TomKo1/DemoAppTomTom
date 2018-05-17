@@ -10,9 +10,9 @@ class MenuDrawerTableViewController: UITableViewController {
 
     }
 
-    /************************************
+    /*
      * Table view managment
-     ************************************/
+     */
     override func numberOfSections(in tableView: UITableView) -> Int{
         return 1
     }

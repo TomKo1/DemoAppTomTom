@@ -13,7 +13,6 @@ class ProjectHelpers: NSObject {
     */
     func readBoolFromUserDefaults(key: String) -> Bool {
         let preferences = UserDefaults.standard
-        // bo jak nie istnieje to jest false -> domyslnie wylaczone
 
         return  preferences.bool(forKey: key)
     }
@@ -56,8 +55,6 @@ class ProjectHelpers: NSObject {
     private func didSave(preferences: UserDefaults){
         let didSave = preferences.synchronize()
         if !didSave{
-            //todo: toast/exception
-            //print("Preferences could not be saved!")
             fatalError("Preferences could not be saved!")
         }
     }
