@@ -1,0 +1,35 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+# RUBY :O
+target 'demoApp' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for demoApp
+  pod 'TomTomOnlineSDKMaps'
+  pod 'TomTomOnlineSDKSearch'
+  pod 'TomTomOnlineSDKRouting'
+  pod 'TomTomOnlineSDKMapsUIExtensions'
+  pod 'SideMenu'
+
+  target 'demoAppTests' do
+    inherit! :search_paths
+    # Pods for testing
+    pod 'TomTomOnlineSDKMaps'
+    pod 'TomTomOnlineSDKSearch'
+    pod 'TomTomOnlineSDKRouting'
+    pod 'TomTomOnlineSDKMapsUIExtensions'
+    pod 'SideMenu'
+  end
+
+  target 'demoAppUITests' do
+    inherit! :search_paths
+    # Pods for testing
+    pod 'TomTomOnlineSDKMaps'
+    pod 'TomTomOnlineSDKSearch'
+    pod 'TomTomOnlineSDKRouting'
+    pod 'TomTomOnlineSDKMapsUIExtensions'
+    pod 'SideMenu'
+  end
+
+end
